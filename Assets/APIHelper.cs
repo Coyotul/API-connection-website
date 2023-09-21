@@ -7,25 +7,32 @@ public class APIHelper : MonoBehaviour
 {
     [SerializeField] private Material _material;
 
+    //Get new image through API and apply it to object's material
     public async void GetNewImageAsync()
     {
         string category = "nature";
         Texture2D texture = new Texture2D(2, 2);
         
-        UnityWebRequest www = UnityWebRequestTexture.GetTexture("https://picsum.photos/200/300");
+        //Get reference to the website
+        UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture("https://picsum.photos/200/300");
 
-        www.SendWebRequest();
+        //Send request to website
+        webRequest.SendWebRequest();
+        //Wait 3 seconds for request
         Debug.Log("Wait 3 seconds");
         await Task.Delay(TimeSpan.FromSeconds(3));
 
-        if (www.result == UnityWebRequest.Result.Success)
+        //If the result of the request was a success then download it
+        if (webRequest.result == UnityWebRequest.Result.Success)
         {
-            texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+            texture = ((DownloadHandlerTexture)webRequest.downloadHandler).texture;
         }
         else
         {
-            Debug.LogError("Error: " + www.error);
+            Debug.LogError("Error: " + webRequest.error);
         }
+        
+        //Apply texture to object's material
         _material.mainTexture = texture;
     }
 }
